@@ -1,5 +1,13 @@
 # matamo-basics
 
+## Using matomo on local
+
+- Copy the file named docker-compose.yml.
+- Replace placeholders like your_mysql_root_password, matomo_user, and matomo_password with your desired values.
+- Open a terminal
+- Navigate to the directory containing the docker-compose.yml file
+- Run docker-compose up -d to start the services.
+
 ## Add Matomo Tracking Code
 
           <!-- Matomo -->
