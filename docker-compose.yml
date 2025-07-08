@@ -1,32 +1,38 @@
-version: '3.8'
-
 services:
   db:
-    image: mariadb:latest
+    platform: linux/amd64
+    image: mysql:5.7
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: your_mysql_root_password
+      MYSQL_ROOT_PASSWORD: example_root_password
       MYSQL_DATABASE: matomo
       MYSQL_USER: matomo_user
-      MYSQL_PASSWORD: matomo_password
+      MYSQL_PASSWORD: example_password
+      TZ: Europe/Berlin  # Set your local timezone
+    ports:
+      - "3306:3306"  # Expose MySQL port for local access
     volumes:
       - db_data:/var/lib/mysql
 
   matomo:
     image: matomo:latest
     restart: always
-    ports:
-      - "8080:80"
-    environment:
-      MATOMO_DATABASE_HOST: db
-      MATOMO_DATABASE_NAME: matomo
-      MATOMO_DATABASE_USER: matomo_user
-      MATOMO_DATABASE_PASSWORD: matomo_password
-      MATOMO_DATABASE_ADAPTER: pdo_mysql
-    volumes:
-      - matomo_data:/var/www/html
     depends_on:
       - db
+    ports:
+      - "8080:80"  # Matomo web interface
+    environment:
+      MATOMO_DATABASE_HOST: db
+      MATOMO_DATABASE_ADAPTER: MYSQLI
+      MATOMO_DATABASE_TABLES_PREFIX: matomo_
+      MATOMO_DATABASE_USERNAME: matomo_user
+      MATOMO_DATABASE_PASSWORD: example_password
+      MATOMO_DATABASE_DBNAME: matomo
+      MATOMO_SETUP_FORCE_SECURE: '1'
+      TZ: Europe/Berlin  # Set your local timezone
+    volumes:
+      - matomo_data:/var/www/html
+      # - ./php.ini:/usr/local/etc/php/conf.d/custom.ini  # Uncomment to use custom PHP config
 
 volumes:
   db_data:
